@@ -1,10 +1,14 @@
 #include <jni.h>
 #include <string>
+#include "native-lib.h"
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_luciano_ndkcamera_MainActivity_stringFromJNI(
+JNIEXPORT jstring JNICALL Java_com_example_luciano_ndkcamera_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
     return env->NewStringUTF(hello.c_str());
+}
+
+JNIEXPORT void JNICALL MainActivity_printCameras( JNIEnv *env, jobject /* this */){
+    
 }
