@@ -1,6 +1,10 @@
 package com.example.luciano.ndkcamera;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-
+    public final static int CAMERA_REQUEST_CODE = 666;
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -36,6 +40,37 @@ public class MainActivity extends AppCompatActivity {
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
+
+        //ritual da permissão da câmera
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED) {
+            tv.setText("camera bloqueada");
+            String[] permissionsToRequest = {Manifest.permission.CAMERA};
+            ActivityCompat.requestPermissions(this, permissionsToRequest,CAMERA_REQUEST_CODE);
+        }
+        else{
+            doSomethingWithCamera();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        switch(requestCode){
+            case CAMERA_REQUEST_CODE:{
+                if((grantResults.length > 0) && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    //permissao dada
+                    doSomethingWithCamera();
+                }
+                else{
+                    TextView tv = (TextView) findViewById(R.id.sample_text);
+                    tv.setText("camera bloqueada");
+                }
+            }
+        }
+    }
+
+    private void doSomethingWithCamera(){
+        TextView tv = (TextView) findViewById(R.id.sample_text);
+        tv.setText("camera liberada");
     }
 
     @Override
